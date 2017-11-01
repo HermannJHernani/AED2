@@ -7,6 +7,10 @@ using namespace std;
 typedef int Cor;
 typedef int Vert;
 
+#define BRANCO 0
+#define CINZA 1
+#define PRETO 2
+
 
 //CLASSE LISTA !
 template<typename T>
@@ -86,8 +90,9 @@ private:
     pair<char,int> posicao;
     List< pair<char,int> > movimentos;
 public:
-    Move(pair<char,int>, Move posicao);
-    void setPosicao(Move posicao);
+    Move();
+    Move(pair<char,int>par);
+    void setPosicao(pair<char, int> par);
     void insereMovimentos(pair<char,int>,int,int);
     void listarMovimentos(pair<char,int>);
     void verificaMovimentos();
@@ -95,12 +100,16 @@ public:
 };
 
 //METODOS DA CLASSE MOVE
-Move::Move(pair< char, int >, Move posicao ){
-    this->posicao = posicao;
+Move::Move(pair< char, int > par){
+    this->posicao = par;
 }
 
-void Move::setPosicao(Move posicao){
-    this.posicao = posicao;
+Move::Move(){
+  this->posicao = make_pair(' ', 0);
+}
+
+void Move::setPosicao(pair< char, int > par){
+    this->posicao = par;
 }
 
 void Move::insereMovimentos(pair<char,int> posicao, int frente, int lado){
@@ -158,6 +167,7 @@ private:
     int tam;
     int ordem;
     void destroy();
+    int Cor;
 public:
     Grafo(int);
     void inicializa(int);
@@ -165,7 +175,8 @@ public:
     void removeAresta(Vert, Vert);
     void setPosicao(Move);
     void printGrafo();
-    void Bfs(int v);
+    void BFS(Grafo g, int v);
+    void imprime();
 
 };
 //Metodos Grafo
@@ -178,7 +189,7 @@ void Grafo::inicializa(int ordem){
         destroy();
     }
     this->ordem = ordem;
-    adj = new Lista<int>[ordem + 1];
+    adj = new List<int>[ordem + 1];
 }
 
 void Grafo::insereAresta(Vert u, Vert v){
@@ -205,13 +216,14 @@ void Grafo::destroy(){
 }
 
 void Grafo::BFS (Grafo g, Vert s){
+    int i = 0;
     while(i < g.tam){
-        g[i].cor = branco;
+        g[i].Cor = BRANCO;
         g[i].valor = -1;
 		g[i].pai = NULL;
 		i++;
     }
-    s.cor = cinza;
+    s.Cor = CINZA;
     s.valor = 0;
     s.pai = NULL;
 
@@ -220,8 +232,8 @@ void Grafo::BFS (Grafo g, Vert s){
     while(Q != NULL){
 	    g = remove(Q);
 	    while (i < g.adj.size){
-	        if(g.adj[i].cor == branco){
-		        g.adj[i].cor = cinza;
+	        if(g.adj[i].cor == BRANCO){
+		        g.adj[i].cor = CINZA;
 		        g.adj[i].valor = g[i].valor + 1;
 		        g.adj[i].pai = g[i];
 		        Q.insere (Q,g.adj[i])
