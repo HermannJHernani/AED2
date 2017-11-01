@@ -168,6 +168,7 @@ private:
     int ordem;
     void destroy();
     int Cor;
+    int pai;
 public:
     Grafo(int);
     void inicializa(int);
@@ -217,11 +218,14 @@ void Grafo::destroy(){
 
 void Grafo::BFS (Grafo g, Vert s){
     int i = 0;
+
+    //tam = size.g;
+
     while(i < g.tam){
         g[i].Cor = BRANCO;
         g[i].valor = -1;
-		g[i].pai = NULL;
-		i++;
+		    g[i].pai = NULL;
+		    i++;
     }
     s.Cor = CINZA;
     s.valor = 0;
@@ -236,7 +240,7 @@ void Grafo::BFS (Grafo g, Vert s){
 		        g.adj[i].cor = CINZA;
 		        g.adj[i].valor = g[i].valor + 1;
 		        g.adj[i].pai = g[i];
-		        Q.insere (Q,g.adj[i])
+		        Q.insere (Q,g.adj[i]);
 	        }
 	        g.cor = preto;
 	    }
