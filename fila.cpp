@@ -121,3 +121,14 @@ void Fila::imprime() {
     }
     cout << "\n";
 }
+
+
+
+int main(int argc, char const *argv[]) {
+	Lista l;
+	Item b;
+	cin >> b;
+	l.insere(b);
+	l.imprime(l);
+	return 0;
+}
