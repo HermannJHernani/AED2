@@ -1,50 +1,77 @@
+/******************************************************************************
+AED2
+Amanda Leticia Mineiro Chaves 
+Backtracking em c. Dado um tabuleiro com n x n posições, o cavalo movimenta-se segundo as regras do xadrez. 
+Enconte um passeio de um cavalo no tabuleiro de xadrez que visite todas as posições do t
+*******************************************************************************/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-int t[8][8],a[8],b[8];
-void imprime(){
- int i,j;
- for(i=0;i<8;i++){ 
 
-   for(j=0;j<8;j++){ 
+int a[8] = {2, 1, -1, -2, -2, -1, 1, 2}, //combinação de movimentos possíveis do cavalo no xadrez
+    b[8] = {1, 2, 2, 1, -1, -2, -2, -1};   
 
-     printf("%3d",t[i][j]);} 
+void imprime(int n,int tabuleiro[n][n]){ //imprime o tabuleiro na ordem em que cada casa foi visitada
+    int i,j; 
 
-    printf("\n"); 
+    for(i=0;i<8;i++){ 
 
-   }
+    for(j=0;j<8;j++){ 
+
+        printf("%3d",tabuleiro[i][j]);} 
+        printf("\n"); 
+
+    }
 }
-int cavalo(int i, int x, int y){
- int u,v,k,q; 
- if(i==65){ imprime(); return 1;}
- //executa movimentos
- for(k=0;k<8;k++){
-  u = x + a[k];  v = y + b[k];
-  //testa limites do tabuleiro
-  if( (u>=0 && u<=7) && (v>=0 && v<=7)){
-   if(t[u][v]==0){ //posicao livre
-    t[u][v]=i; //registre o movimento
-    q = cavalo(i+1,u,v);
-    if(q==0) t[u][v]=0; //se não alcançou todos, desfaça 
 
-    else return 1; // se alcançou todos, retorne 1
-   }
-  }
- }
- return 0;
+int movimentoCavalo(int i, int x, int y, int n, int tabuleiro[n][n]){
+
+    int u,v,  //x e y para proximas posições do cavalo
+    k,  //controla a variação das 8 combinações diferentes do cavalo
+    q,  //guarda retorno da função
+    casas = (n * n) + 1;
+
+    if(i==casas){ //Quando o cavalo tiver passado todas as casas 
+        imprime(n,tabuleiro); 
+        return 1;
+    }  
+    
+    //executa movimentos
+    for(k=0;k<8;k++){
+
+        u = x + a[k];  
+        v = y + b[k];
+        //testa limites do tabuleiro
+        if( (u>=0 && u<=7) && (v>=0 && v<=7)){
+
+            if(tabuleiro[u][v]==0){ //posicao livre
+
+                tabuleiro[u][v]=i; //registre o movimento
+                q = movimentoCavalo(i+1,u,v,n,tabuleiro);
+
+                if(q==0) tabuleiro[u][v]=0; //se não alcançou todos, desfaça 
+
+                else return 1; // se alcançou todos, retorne 1
+            }
+        }
+    }
+    return 0;
 }
+
 int main(){
- int cont;
- //inicializa os deslocamentos dos movimentos
- a[0]=2;a[1]=1;a[2]=-1;a[3]=-2; 
- b[0]=1;b[1]=2;b[2]=2;b[3]=1;
- 
- a[4]=-2;a[5]=-1;a[6]=1;a[7]=2;
- b[4]=-1;b[5]=-2;b[6]=-2;b[7]=-1; 
- memset(t,0,sizeof(t));
- cont =1;
- t[0][0]=1;
- cavalo(2,0,0);
+    int cont, n;
+
+    printf("Qual o tamanho do tabuleiro: ");
+    scanf("%d", &n);
+
+    int tabuleiro[n][n];  //tabuleiro de 8 x 8
+
+    memset(tabuleiro,0,sizeof(tabuleiro));
+    cont =1;
+    //inicializando o cavalo no tabuleiro
+    tabuleiro[0][0]=1;
+    movimentoCavalo(2,0,0,n,tabuleiro);
 }
 
 main();
