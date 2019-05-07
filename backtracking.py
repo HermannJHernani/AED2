@@ -23,12 +23,12 @@ class KnightsTour:
         """
         Funcao de print do tabuleiro
         """       
-        print "  "
-        print "------"
+        print ("  ")
+        print ("------")
         for elem in self.board:
-            print elem
-        print "------"
-        print "  "
+            print (elem)
+        print ("------")
+        print ("  ")
 
     def generate_legal_moves(self, cur_pos):
         """
@@ -91,12 +91,12 @@ class KnightsTour:
         """
         self.board[to_visit[0]][to_visit[1]] = n
         path.append(to_visit) #acrescente o vertice mais recente ao ponto atual 
-        print "Visiting: ", to_visit
+        print ("Visiting: ", to_visit)
 
         if n == self.w * self.h: #se todo o tabuleiro foi percorrido
             self.print_board()
-            print path
-            print "Done!"
+            print (path)
+            print ("Done!")
             sys.exit(1)
 
         else:
@@ -108,9 +108,9 @@ class KnightsTour:
             self.board[to_visit[0]][to_visit[1]] = 0
             try:
                 path.pop()
-                print "Going back to: ", path[-1]
+                print ("Going back to: ", path[-1])
             except IndexError:
-                print "No path found"
+                print ("No path found")
                 sys.exit(1)
 
 if __name__ == '__main__':
