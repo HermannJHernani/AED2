@@ -6,73 +6,80 @@ Enconte um passeio de um cavalo no tabuleiro de xadrez que visite todas as posi�
 *******************************************************************************/
 
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 
-int a[8] = {2, 1, -1, -2, -2, -1, 1, 2}, //combinação de movimentos possíveis do cavalo no xadrez
-    b[8] = {1, 2, 2, 1, -1, -2, -2, -1};   
+//board of n x n
+int input(){
+    
+    int n;
+    printf("Qual o tamanho do tabuleiro: ");
+    scanf("%d", &n);
 
-void imprime(int n,int tabuleiro[n][n]){ //imprime o tabuleiro na ordem em que cada casa foi visitada
-    int i,j; 
-
-    for(i=0;i<8;i++){ 
-
-    for(j=0;j<8;j++){ 
-
-        printf("%3d",tabuleiro[i][j]);} 
-        printf("\n"); 
-
-    }
+    return n;
 }
 
-int movimentoCavalo(int i, int x, int y, int n, int tabuleiro[n][n]){
-
-    int u,v,  //x e y para proximas posições do cavalo
-    k,  //controla a variação das 8 combinações diferentes do cavalo
-    q,  //guarda retorno da função
-    casas = (n * n) + 1;
-
-    if(i==casas){ //Quando o cavalo tiver passado todas as casas 
-        imprime(n,tabuleiro); 
-        return 1;
-    }  
+//check if it is inside the chessboard and if the cell is not already occupied
+int is_valid(int N, int i, int j, int sol[N+1][N+1]) { 
     
-    //executa movimentos
-    for(k=0;k<8;k++){
+    if (i>=1 && i<=N && j>=1 && j<=N && sol[i][j]==-1)
+        return 1;
+    return 0;
+}
 
-        u = x + a[k];  
-        v = y + b[k];
-        //testa limites do tabuleiro
-        if( (u>=0 && u<=7) && (v>=0 && v<=7)){
+int knight_tour(int N, int sol[N+1][N+1], int i, int j, int step_count, int x_move[], int y_move[]) {
 
-            if(tabuleiro[u][v]==0){ //posicao livre
+    if (step_count == N*N)  //check if the solution is found.
+        return 1;
 
-                tabuleiro[u][v]=i; //registre o movimento
-                q = movimentoCavalo(i+1,u,v,n,tabuleiro);
+    int k;
+    for(k=0; k<8; k++) {  //move to the next possible knight's
+        int next_i = i+x_move[k];
+        int next_j = j+y_move[k];
 
-                if(q==0) tabuleiro[u][v]=0; //se não alcançou todos, desfaça 
-
-                else return 1; // se alcançou todos, retorne 1
-            }
+        if(is_valid(N, i+x_move[k], j+y_move[k], sol)) {  //check if the cell is valid
+            sol[next_i][next_j] = step_count;
+            if (knight_tour(N, sol, next_i, next_j, step_count+1, x_move, y_move))
+            return 1;
+            sol[i+x_move[k]][j+y_move[k]] = -1; // backtracking
         }
+    }
+    
+    //if none the possible move returns false
+    return 0;
+}
+
+int start_knight_tour(int N) {
+    int sol[N+1][N+1];
+
+    int i, j;
+    for(i=1; i<=N; i++) {
+        for(j=1; j<=N; j++) {
+            sol[i][j] = -1;
+        }
+    }
+
+    //possible moves from a cell
+    int x_move[] = {2, 1, -1, -2, -2, -1, 1, 2};
+    int y_move[] = {1, 2, 2, 1, -1, -2, -2, -1};
+
+    sol[1][1] = 0; // placing knight at cell(1, 1)
+
+    if (knight_tour(N, sol, 1, 1, 1, x_move, y_move)) {
+        for(i=1; i<=N; i++) {
+            for(j=1; j<=N; j++) {
+                printf("%d\t",sol[i][j]);
+            }
+            printf("\n");
+        }
+        return 1;
     }
     return 0;
 }
 
-int main(){
-    int cont, n;
+int main() {
+    
+    int size = input();
 
-    printf("Qual o tamanho do tabuleiro: ");
-    scanf("%d", &n);
-
-    int tabuleiro[n][n];  //tabuleiro de 8 x 8
-
-    memset(tabuleiro,0,sizeof(tabuleiro));
-    cont =1;
-    //inicializando o cavalo no tabuleiro
-    tabuleiro[0][0]=1;
-    movimentoCavalo(2,0,0,n,tabuleiro);
+    printf("%d\n",start_knight_tour(size));
+    return 0;
 }
-
-main();
  
