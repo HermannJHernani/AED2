@@ -2,6 +2,10 @@ import sys
 
 class KnightsTour:
     def __init__(self, width, height):
+        """
+        Funcao de start, contendo altura e largura ou seja linhas e colunas da matriz,
+        declaracao do nome da matriz e chamada da funcao de criacao do tabuleiro
+        """
         self.w = width
         self.h = height
 
@@ -10,12 +14,15 @@ class KnightsTour:
 
     def generate_board(self):
         """
-        Creates a nested list to represent the game board
+        Cria uma linha aninhada para representar o tabuleiro
         """
         for i in range(self.h):
             self.board.append([0]*self.w)
 
     def print_board(self):
+        """
+        Funcao de print do tabuleiro
+        """       
         print "  "
         print "------"
         for elem in self.board:
@@ -25,7 +32,7 @@ class KnightsTour:
 
     def generate_legal_moves(self, cur_pos):
         """
-        Generates a list of legal moves for the knight to take next
+        Gerador de lista de movimentos aceitos que um cavalo pode fazer a seguir
         """
         possible_pos = []
         move_offsets = [(1, 2), (1, -2), (-1, 2), (-1, -2),
@@ -50,9 +57,9 @@ class KnightsTour:
 
     def sort_lonely_neighbors(self, to_visit):
         """
-        It is more efficient to visit the lonely neighbors first, 
-        since these are at the edges of the chessboard and cannot 
-        be reached easily if done later in the traversal
+        Eh mais eficiente visitar primeiro os vizinhos de canto,
+        uma vez que estes estao nas bordas do tabuleiro de xadrez e nao pode
+        ser alcancado facilmente se feito mais tarde na travessia
         """
         neighbor_list = self.generate_legal_moves(to_visit)
         empty_neighbours = []
@@ -77,16 +84,16 @@ class KnightsTour:
 
     def tour(self, n, path, to_visit):
         """
-        Recursive definition of knights tour. Inputs are as follows:
-        n = current depth of search tree
-        path = current path taken
-        to_visit = node to visit
+        Recursao do tour dos cavalos. Inputs sao os seguintes:
+        n = eh a atual arvore de busca em profundidade
+        path = caminho atual
+        to_visit = no a ser visitado
         """
         self.board[to_visit[0]][to_visit[1]] = n
-        path.append(to_visit) #append the newest vertex to the current point
+        path.append(to_visit) #acrescente o vertice mais recente ao ponto atual 
         print "Visiting: ", to_visit
 
-        if n == self.w * self.h: #if every grid is filled
+        if n == self.w * self.h: #se todo o tabuleiro foi percorrido
             self.print_board()
             print path
             print "Done!"
@@ -97,7 +104,7 @@ class KnightsTour:
             for neighbor in sorted_neighbours:
                 self.tour(n+1, path, neighbor)
 
-            #If we exit this loop, all neighbours failed so we reset
+            #Se sair desse loop, todos os vizinhos deram errado, entao o resetamos
             self.board[to_visit[0]][to_visit[1]] = 0
             try:
                 path.pop()
@@ -107,7 +114,7 @@ class KnightsTour:
                 sys.exit(1)
 
 if __name__ == '__main__':
-    #Define the size of grid. We are currently solving for an 8x8 grid
+    #Input definindo o tamanho do tabuleiro e chamada das funcoes
     n = int(input("Tamanho do tabuleiro: "))
     kt = KnightsTour(n, n)
     kt.tour(1, [], (0,0))
