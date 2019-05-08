@@ -1,13 +1,18 @@
-def partitions(A):
-    if not A:
-        yield []
-    else:
-        a, *R = A
-        for partition in partitions(R):
-            yield partition + [[a]]
-            for i, subset in enumerate(partition):
-                yield partition[:i] + [subset + [a]] + partition[i+1:]
+def particoes(A):
+	if not A: #verifica se a lista A esta vazia
+		yield []
+	else:
+		a, *R = A # 'a' recebe o conteudo da primeira posicao da lista e 'b' recebe o resto do conteudo
+		for particao in particoes(R): #inicia a recursao
+			yield particao + [[a]]
+			for i, subset in enumerate(particao): #enumera cada item da lista retornada 
+				yield particao[:i] + [subset + [a]] + particao[i+1:] #retorna a particao naquele momento
 
-for partition in partitions({1,2,3,4}):
-    print(partition)
+if __name__ == '__main__':
+
+	for particao in particoes({1,2,3,4}):
+		print(particao)
+
+
+
 
