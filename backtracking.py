@@ -1,121 +1,91 @@
-import sys
+/******************************************************************************
+AED2
+Amanda Leticia Mineiro Chaves 
+Backtracking em c. Dado um tabuleiro com n x n posições, o cavalo movimenta-se segundo as regras do xadrez. 
+Enconte um passeio de um cavalo no tabuleiro de xadrez que visite todas as posições do t
+*******************************************************************************/
 
-class KnightsTour:
-    def __init__(self, width, height):
-        """
-        Funcao de start, contendo altura e largura ou seja linhas e colunas da matriz,
-        declaracao do nome da matriz e chamada da funcao de criacao do tabuleiro
-        """
-        self.w = width
-        self.h = height
+#include <stdio.h>
 
-        self.board = []
-        self.generate_board()
+/*tabuleiro n x n*/
+int input(){
+    
+    int n;
+    printf("Qual o tamanho do tabuleiro: ");
+    scanf("%d", &n);
 
-    def generate_board(self):
-        """
-        Cria uma linha aninhada para representar o tabuleiro
-        """
-        for i in range(self.h):
-            self.board.append([0]*self.w)
+    return n;
+}
 
-    def print_board(self):
-        """
-        Funcao de print do tabuleiro
-        """       
-        print ("  ")
-        print ("------")
-        for elem in self.board:
-            print (elem)
-        print ("------")
-        print ("  ")
+/*verifica se está dentro do tabuleiro de xadrez e se a posição ainda não está ocupada*/
+int posicao_valida(int N, int i, int j, int tabuleiro[N+1][N+1]) { 
+    
+    if (i>=1 && i<=N && j>=1 && j<=N && tabuleiro[i][j]==-1)
+        return 1;
+    return 0;
+}
 
-    def generate_legal_moves(self, cur_pos):
-        """
-        Gerador de lista de movimentos aceitos que um cavalo pode fazer a seguir
-        """
-        possible_pos = []
-        move_offsets = [(1, 2), (1, -2), (-1, 2), (-1, -2),
-                        (2, 1), (2, -1), (-2, 1), (-2, -1)]
+/*leva a matriz de solução, a posição onde atualmente o cavalo está, a contagem de passos dessa célula 
+e as duas matrizes para o movimento (x_move, y_move)*/
+int movimento_cavalo(int N, int tabuleiro[N+1][N+1], int i, int j, int conta_passo, int x_move[], int y_move[]) {
+    
+    /*verifica se a solução foi encontrada*/
+    if (conta_passo == N*N)  
+        return 1;
 
-        for move in move_offsets:
-            new_x = cur_pos[0] + move[0]
-            new_y = cur_pos[1] + move[1]
+    int k;
+    
+    /*movimenta para a proxima posição possível*/
+    for(k=0; k<8; k++) {  
+        int proximo_i = i+x_move[k];
+        int proximo_j = j+y_move[k];
+        
+        /*verifica se a posição é válida*/
+        if(posicao_valida(N, i+x_move[k], j+y_move[k], tabuleiro)) {  
+            tabuleiro[proximo_i][proximo_j] = conta_passo;
+            if (movimento_cavalo(N, tabuleiro, proximo_i, proximo_j, conta_passo+1, x_move, y_move))
+                return 1;
+            tabuleiro[i+x_move[k]][j+y_move[k]] = -1;
+        }
+    }
+    
+    /*se o movimento não é possível, retorna falso*/
+    return 0;
+}
 
-            if (new_x >= self.h):
-                continue
-            elif (new_x < 0):
-                continue
-            elif (new_y >= self.w):
-                continue
-            elif (new_y < 0):
-                continue
-            else:
-                possible_pos.append((new_x, new_y))
+int inicia_movimento_cavalo(int N) {
+    int tabuleiro[N+1][N+1];
 
-        return possible_pos
+    int i, j;
+    for(i=1; i<=N; i++) {
+        for(j=1; j<=N; j++) {
+            tabuleiro[i][j] = -1;
+        }
+    }
 
-    def sort_lonely_neighbors(self, to_visit):
-        """
-        Eh mais eficiente visitar primeiro os vizinhos de canto,
-        uma vez que estes estao nas bordas do tabuleiro de xadrez e nao pode
-        ser alcancado facilmente se feito mais tarde na travessia
-        """
-        neighbor_list = self.generate_legal_moves(to_visit)
-        empty_neighbours = []
+    /*movimentos possíveis do cavalo*/
+    int x_move[] = {2, 1, -1, -2, -2, -1, 1, 2};
+    int y_move[] = {1, 2, 2, 1, -1, -2, -2, -1};
+    
+    //iniciando o cavalo na posição(1, 1) para 0*/
+    tabuleiro[1][1] = 0; 
+    
+    if (movimento_cavalo(N, tabuleiro, 1, 1, 1, x_move, y_move)) {
+        for(i=1; i<=N; i++) {
+            for(j=1; j<=N; j++) {
+                printf("%d\t",tabuleiro[i][j]);
+            }
+            printf("\n");
+        }
+        return 1;
+    }
+    return 0;
+}
 
-        for neighbor in neighbor_list:
-            np_value = self.board[neighbor[0]][neighbor[1]]
-            if np_value == 0:
-                empty_neighbours.append(neighbor)
+int main() {
+    
+    int tamanho = input();
 
-        scores = []
-        for empty in empty_neighbours:
-            score = [empty, 0]
-            moves = self.generate_legal_moves(empty)
-            for m in moves:
-                if self.board[m[0]][m[1]] == 0:
-                    score[1] += 1
-            scores.append(score)
-
-        scores_sort = sorted(scores, key = lambda s: s[1])
-        sorted_neighbours = [s[0] for s in scores_sort]
-        return sorted_neighbours
-
-    def tour(self, n, path, to_visit):
-        """
-        Recursao do tour dos cavalos. Inputs sao os seguintes:
-        n = eh a atual arvore de busca em profundidade
-        path = caminho atual
-        to_visit = no a ser visitado
-        """
-        self.board[to_visit[0]][to_visit[1]] = n
-        path.append(to_visit) #acrescente o vertice mais recente ao ponto atual 
-        print ("Visiting: ", to_visit)
-
-        if n == self.w * self.h: #se todo o tabuleiro foi percorrido
-            self.print_board()
-            print (path)
-            print ("Done!")
-            sys.exit(1)
-
-        else:
-            sorted_neighbours = self.sort_lonely_neighbors(to_visit)
-            for neighbor in sorted_neighbours:
-                self.tour(n+1, path, neighbor)
-
-            #Se sair desse loop, todos os vizinhos deram errado, entao o resetamos
-            self.board[to_visit[0]][to_visit[1]] = 0
-            try:
-                path.pop()
-                print ("Going back to: ", path[-1])
-            except IndexError:
-                print ("No path found")
-                sys.exit(1)
-
-if __name__ == '__main__':
-    #Input definindo o tamanho do tabuleiro e chamada das funcoes
-    n = int(input("Tamanho do tabuleiro: "))
-    kt = KnightsTour(n, n)
-    kt.tour(1, [], (0,0))
-    kt.print_board()
+    printf("%d\n",inicia_movimento_cavalo(tamanho));
+    return 0;
+}
