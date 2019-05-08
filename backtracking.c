@@ -18,34 +18,34 @@ int input(){
 }
 
 /*verifica se está dentro do tabuleiro de xadrez e se a posição ainda não está ocupada*/
-int is_valid(int N, int i, int j, int sol[N+1][N+1]) { 
+int posicao_valida(int N, int i, int j, int tabuleiro[N+1][N+1]) { 
     
-    if (i>=1 && i<=N && j>=1 && j<=N && sol[i][j]==-1)
+    if (i>=1 && i<=N && j>=1 && j<=N && tabuleiro[i][j]==-1)
         return 1;
     return 0;
 }
 
 /*leva a matriz de solução, a posição onde atualmente o cavalo está, a contagem de passos dessa célula 
 e as duas matrizes para o movimento (x_move, y_move)*/
-int knight_tour(int N, int sol[N+1][N+1], int i, int j, int step_count, int x_move[], int y_move[]) {
+int movimento_cavalo(int N, int tabuleiro[N+1][N+1], int i, int j, int conta_passo, int x_move[], int y_move[]) {
     
     /*verifica se a solução foi encontrada*/
-    if (step_count == N*N)  
+    if (conta_passo == N*N)  
         return 1;
 
     int k;
     
     /*movimenta para a proxima posição possível*/
     for(k=0; k<8; k++) {  
-        int next_i = i+x_move[k];
-        int next_j = j+y_move[k];
+        int proximo_i = i+x_move[k];
+        int proximo_j = j+y_move[k];
         
         /*verifica se a posição é válida*/
-        if(is_valid(N, i+x_move[k], j+y_move[k], sol)) {  
-            sol[next_i][next_j] = step_count;
-            if (knight_tour(N, sol, next_i, next_j, step_count+1, x_move, y_move))
+        if(posicao_valida(N, i+x_move[k], j+y_move[k], tabuleiro)) {  
+            tabuleiro[proximo_i][proximo_j] = conta_passo;
+            if (movimento_cavalo(N, tabuleiro, proximo_i, proximo_j, conta_passo+1, x_move, y_move))
                 return 1;
-            sol[i+x_move[k]][j+y_move[k]] = -1;
+            tabuleiro[i+x_move[k]][j+y_move[k]] = -1;
         }
     }
     
@@ -53,13 +53,13 @@ int knight_tour(int N, int sol[N+1][N+1], int i, int j, int step_count, int x_mo
     return 0;
 }
 
-int start_knight_tour(int N) {
-    int sol[N+1][N+1];
+int inicia_movimento_cavalo(int N) {
+    int tabuleiro[N+1][N+1];
 
     int i, j;
     for(i=1; i<=N; i++) {
         for(j=1; j<=N; j++) {
-            sol[i][j] = -1;
+            tabuleiro[i][j] = -1;
         }
     }
 
@@ -68,12 +68,12 @@ int start_knight_tour(int N) {
     int y_move[] = {1, 2, 2, 1, -1, -2, -2, -1};
     
     //iniciando o cavalo na posição(1, 1) para 0*/
-    sol[1][1] = 0; 
+    tabuleiro[1][1] = 0; 
     
-    if (knight_tour(N, sol, 1, 1, 1, x_move, y_move)) {
+    if (movimento_cavalo(N, tabuleiro, 1, 1, 1, x_move, y_move)) {
         for(i=1; i<=N; i++) {
             for(j=1; j<=N; j++) {
-                printf("%d\t",sol[i][j]);
+                printf("%d\t",tabuleiro[i][j]);
             }
             printf("\n");
         }
@@ -84,9 +84,8 @@ int start_knight_tour(int N) {
 
 int main() {
     
-    int size = input();
+    int tamanho = input();
 
-    printf("%d\n",start_knight_tour(size));
+    printf("%d\n",inicia_movimento_cavalo(tamanho));
     return 0;
 }
- 
