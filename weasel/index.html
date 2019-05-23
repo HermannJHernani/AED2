@@ -10,17 +10,12 @@
   <body>
     <div class="container_12">
       <h1>AED 2 - HERMANN, EDUARDO E ARIEL</h1>
-      
-      <form action="index.html" method="get">
-              Name:  <input type="text" username="username" />
-              <input type="submit" value="ENVIAR" />
-      </form>
-      <php>
-        $username = $_GET["username"];
-        echo $username;
-      </php>
 
-      
+      <form action="index.html" method="get">
+        First name: <input type="text" name="nome"><br>
+        <input type="submit" value="Submit">
+      </form>
+
       <br />
       <h2>Resultado:</h2>
       <p id="resultsIntro"></p>
@@ -28,23 +23,33 @@
     </div>
 
   <script type="text/javascript">
-      var nome = "ARIEL";
-    Weasel = function(config) {
-      var config   = config || {},
-          defaults = {
-            target     : nome,
-            mutateRate : 0.9,
-            numChildren: 5
-          };
       
-      for (key in defaults) {
-        config[key] = config[key] || defaults[key];
-      }
+      var url_string = window.location.href; //window.location.href
+
       
-      for (key in config) {
-        this[key] = config[key];
-      }
-    };
+      var url = new URL(url_string);
+      var nome = url.searchParams.get("nome");
+
+
+
+      if(nome){
+        Weasel = function(config) {
+        var config   = config || {},
+            defaults = {
+              target     : nome,
+              mutateRate : 0.9,
+              numChildren: 5
+            };
+        
+        for (key in defaults) {
+          config[key] = config[key] || defaults[key];
+        }
+        
+        for (key in config) {
+          this[key] = config[key];
+        }
+      };
+    }
 
     Weasel.prototype = {
       /**
