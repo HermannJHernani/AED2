@@ -4,10 +4,14 @@
  * JavaScript implementation of Richard Dawkins' Weasel Program
  * (http://en.wikipedia.org/wiki/Weasel_program)
  */
+
+var nome;
+
+
 Weasel = function(config) {
   var config   = config || {},
       defaults = {
-        target     : "HERMANN HERNANI JACQUES",
+        target     : "ARIEL",
         mutateRate : 0.9,
         numChildren: 5
       };
